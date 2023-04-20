@@ -1,0 +1,153 @@
+/*
+ * API_system.c
+ *
+ *  Created on: Apr 17, 2023
+ *      Author: Francesco Cavina <francescocavina@outlook.com>
+ */
+
+
+/* Includes ------------------------------------------------------------------*/
+#include "API_system.h"
+
+
+/* Private defines -----------------------------------------------------------*/
+#define SYSTEM_TIME	100
+
+
+/* Private typedef -----------------------------------------------------------*/
+typedef enum{
+	COMPASS_READING_SENSOR,
+	COMPASS_WRITING_DISPLAY,
+	RAWDATA_READING_SENSOR,
+	RAWDATA_WRITING_DISPLAY
+} systemState_t;
+
+
+/* Private variables ---------------------------------------------------------*/
+static delay_t system_delay;
+static systemState_t SYSSTATE;
+static bool_t UPDATE_FLAG = false;
+static int16_t lastValueX = 0;
+static int16_t lastValueY = 0;
+static int16_t lastValueZ = 0;
+static double compass_angle = 0;
+
+
+/* Private function prototypes -----------------------------------------------*/
+/**
+ *  @brief
+ *  @param  None
+ *  @retval None
+ */
+static void readSensor(void);
+
+
+/* Public functions definitions ----------------------------------------------*/
+void systemInit(void) {
+
+	/* Initialize system */
+	SYSSTATE = COMPASS_READING_SENSOR;
+
+	/* Initialize BSP PB for ON-BOARD PUSH-BUTTON */
+	BSP_PB_Init(BUTTON_USER, BUTTON_MODE_GPIO);
+
+	/* Initialize magnetometer sensor */
+	//magnetometerInit();
+
+	/* Initialize OLED display */
+	displayInit();
+
+	/* Initialize system delay */
+	delayInit(&system_delay, SYSTEM_TIME);
+}
+
+void systemUpdate(void) {
+
+	debounceFSM_update();
+
+	switch(SYSSTATE) {
+
+		case COMPASS_READING_SENSOR:
+			if(readKey()) {
+				SYSSTATE = RAWDATA_READING_SENSOR;
+			} else if(delayRead(&system_delay)) {
+				SYSSTATE = COMPASS_WRITING_DISPLAY;
+			}
+			readSensor();
+			break;
+
+		case COMPASS_WRITING_DISPLAY:
+			if(readKey()) {
+				SYSSTATE = RAWDATA_READING_SENSOR;
+			} else if(delayRead(&system_delay)) {
+				SYSSTATE = COMPASS_READING_SENSOR;
+			} else {
+				if(UPDATE_FLAG == true) {
+					drawOuterCircle();
+					drawArrow(compass_angle, SSD1306_COLOR_BLUE);
+					UPDATE_FLAG = false;
+				}
+			}
+			break;
+
+		case RAWDATA_READING_SENSOR:
+			if(readKey()) {
+				SYSSTATE = COMPASS_READING_SENSOR;
+			} else if(delayRead(&system_delay)) {
+				SYSSTATE = RAWDATA_WRITING_DISPLAY;
+			}
+			readSensor();
+			break;
+
+		case RAWDATA_WRITING_DISPLAY:
+			if(readKey()) {
+				SYSSTATE = COMPASS_READING_SENSOR;
+			} else if(delayRead(&system_delay)) {
+				SYSSTATE = RAWDATA_READING_SENSOR;
+			} else {
+				if(UPDATE_FLAG == true) {
+					writeData(lastValueX, lastValueY, lastValueZ);
+					UPDATE_FLAG = false;
+				}
+			}
+			break;
+
+		default:
+			systemInit();
+			break;
+	}
+}
+
+
+/* Private funcTion definitions ----------------------------------------------*/
+static void readSensor(void) {
+
+	double ang = 0;
+
+	srand(HAL_GetTick());
+
+	int16_t newValueX = rand() % 9600 - 4800;
+	int16_t newValueY = rand() % 9600 - 4800;
+	int16_t newValueZ = rand() % 9600 - 4800;
+
+	if(newValueX != lastValueX || newValueY != lastValueY || newValueZ != lastValueZ) {
+		lastValueX = newValueX;
+		lastValueY = newValueY;
+		lastValueZ = newValueZ;
+		UPDATE_FLAG = true;
+	} else {
+		UPDATE_FLAG = false;
+	}
+
+	ang = atan((double)lastValueY / lastValueX);
+
+	if((lastValueX >= 0 && lastValueY >= 0) || (lastValueX >= 0 && lastValueY < 0)) {
+		compass_angle = ang;
+	} else if((lastValueX < 0 && lastValueY >= 0) || (lastValueX < 0 && lastValueY < 0)) {
+		compass_angle = PI + ang;
+	}
+
+	if(compass_angle < 0) {
+		compass_angle += 2 * PI;
+	}
+}

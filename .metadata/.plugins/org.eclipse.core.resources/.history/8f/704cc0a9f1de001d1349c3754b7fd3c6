@@ -1,0 +1,111 @@
+/**
+ * cp2102_port.c
+ *
+ * Created on: Apr 13, 2023
+ *      Author: Francesco Cavina <francescocavina@outlook.com>
+
+ *
+ * The CP2102 Module is a USB 2.0/UART converter and uses UART for communication
+ * with the Microcontroller. On the other side, the USB can be connected to
+ * a PC.
+ *
+ * This driver has different functions for reading and writing the module.
+ * Default pinout depends on platform used.
+ *
+ * CP2102   |STM32F429ZI      |DESCRIPTION
+
+ * VCC       |3.3V            |Power supply voltage
+ * GND       |GND             |Ground
+ * TXD       |PD6 (UART2_RX)  |TX (module) - RX (uC) communication
+ * RXD       |PB5 (UART2_TX)  |RX (module) - TX (uC) communication
+ *
+ *
+ * Note: In order to use this driver with other platform, only modify the
+ *       functions defined on PORT files.
+ *       Look for "MODIFIABLE BEGIN #" and "MODIFIABLE END #" labels.
+ *
+ *
+ * The whole driver is composed of the following files:
+ *
+ *       - cp2102.c			(DO NOT MODIFY!)
+ *       - cp2102.h			(DO NOT MODIFY!)
+ *       - cp2102_port.c	(modifiable)
+ *       - cp2102_port.h	(modifiable)
+ */
+
+
+/* Includes ------------------------------------------------------------------*/
+#include "cp2102_port.h"
+
+
+/* Private variables ---------------------------------------------------------*/
+UART_HandleTypeDef huart2;
+
+
+/* Private function prototypes -----------------------------------------------*/
+/**
+  * @brief  This function is executed in case of error occurrence.
+  * @param  None
+  * @retval None
+  */
+static void Error_Handler(void);
+
+/**
+  * @brief  USART2 Initialization Function
+  * @param  None
+  * @retval None
+  */
+static void MX_USART2_Init(void);
+
+
+/* Private function definitions ----------------------------------------------*/
+/**
+  * @brief USART2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART2_Init(void) {
+
+	/* Initialize I2C peripheral */
+	/* MODIFIABLE BEGIN 1 */
+	huart2.Instance = USART2;
+	huart2.Init.BaudRate = 9600;
+	huart2.Init.WordLength = UART_WORDLENGTH_8B;
+	huart2.Init.StopBits = UART_STOPBITS_1;
+	huart2.Init.Parity = UART_PARITY_NONE;
+	huart2.Init.Mode = UART_MODE_TX_RX;
+	huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+	huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+	/* MODIFIABLE END 1 */
+
+	/**
+	 * To change GPIO for USART peripheral, go to:
+	 *	- File: 	stm32fxxx_hal_msp.c
+	 * 	- Function: void HAL_USART_MspInit(USART_HandleTypeDef* huart)
+	 */
+
+	if (
+		/* MODIFIABLE BEGIN 2 */
+		HAL_UART_Init(&huart2)
+		/* MODIFIABLE END 2 */
+		!= HAL_OK) {
+		Error_Handler();
+	}
+}
+
+static void Error_Handler(void) {
+
+  while (1) {}
+}
+
+
+/* Public function definitions -----------------------------------------------*/
+uint8_t cp2102_UART_Init(void) {
+
+	/* Initialize USART peripheral */
+	/* MODIFIABLE BEGIN 3 */
+	MX_USART2_Init();
+	/* MODIFIABLE END 3 */
+
+
+}

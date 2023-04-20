@@ -1,0 +1,122 @@
+/*
+ * API_system.c
+ *
+ *  Created on: Apr 17, 2023
+ *      Author: Francesco Cavina <francescocavina@outlook.com>
+ */
+
+
+/* Includes ------------------------------------------------------------------*/
+#include "API_system.h"
+
+
+/* Private defines -----------------------------------------------------------*/
+#define SYSTEM_TIME	10
+
+
+/* Private typedef -----------------------------------------------------------*/
+typedef enum{
+	COMPASS_READING_SENSOR,
+	COMPASS_WRITING_DISPLAY,
+	RAWDATA_READING_SENSOR,
+	RAWDATA_WRITING_DISPLAY
+} systemState_t;
+
+
+/* Private variables ---------------------------------------------------------*/
+static delay_t system_delay;
+static systemState_t SYSSTATE;
+static bool_t UPDATE_FLAG = false;
+static uint16_t lastValue = 0;
+
+/* Private function prototypes -----------------------------------------------*/
+/**
+ *  @brief
+ *  @param  None
+ *  @retval None
+ */
+static void readSensor(void);
+
+
+/* Public functions definitions ----------------------------------------------*/
+void systemInit(void) {
+
+	SYSSTATE = COMPASS_READING_SENSOR;
+
+	/* Initialize BSP PB for ON-BOARD PUSH-BUTTON */
+	BSP_PB_Init(BUTTON_USER, BUTTON_MODE_GPIO);
+
+	displayOLED_Init();
+	//magnetometerInit();
+	delayInit(&system_delay, SYSTEM_TIME);
+}
+
+void systemUpdate(void) {
+
+	debounceFSM_update();
+
+	switch(SYSSTATE) {
+
+		case COMPASS_READING_SENSOR:
+			if(readKey()) {
+				SYSSTATE = RAWDATA_READING_SENSOR;
+			} else if(delayRead(&system_delay)) {
+				SYSSTATE = COMPASS_WRITING_DISPLAY;
+			}
+			readSensor();
+			break;
+
+		case COMPASS_WRITING_DISPLAY:
+			if(readKey()) {
+				SYSSTATE = RAWDATA_READING_SENSOR;
+			} else if(delayRead(&system_delay)) {
+				SYSSTATE = COMPASS_READING_SENSOR;
+			} else {
+				if(UPDATE_FLAG == false) {
+					drawOuterCircle();
+					drawArrow(45, SSD1306_COLOR_BLUE);
+				}
+			}
+			break;
+
+		case RAWDATA_READING_SENSOR:
+			if(readKey()) {
+				SYSSTATE = COMPASS_READING_SENSOR;
+			} else if(delayRead(&system_delay)) {
+				SYSSTATE = RAWDATA_WRITING_DISPLAY;
+			}
+			readSensor();
+			break;
+
+		case RAWDATA_WRITING_DISPLAY:
+			if(readKey()) {
+				SYSSTATE = COMPASS_READING_SENSOR;
+			} else if(delayRead(&system_delay)) {
+				SYSSTATE = RAWDATA_READING_SENSOR;
+			} else {
+				if(UPDATE_FLAG == false) {
+					writeData();
+				}
+			}
+			break;
+
+		default:
+			systemInit();
+			break;
+	}
+}
+
+
+/* Private funcTion definitions ----------------------------------------------*/
+static void readSensor(void) {
+
+	uint16_t newValue = readMagnetometer();
+
+	if(newValue != lastValue) {
+		UPDATE_FLAG = true;
+		lastValue = newValue;
+	} else {
+		UPDATE_FLAG = false;
+	}
+
+}

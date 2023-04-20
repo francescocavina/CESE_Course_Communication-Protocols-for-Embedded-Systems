@@ -1,0 +1,19 @@
+/*
+ * API_displayOLED.h
+ *
+ *  Created on: Apr 14, 2023
+ *      Author: francesco
+ */
+
+#ifndef API_DISPLAYOLED_INC_API_DISPLAYOLED_H_
+#define API_DISPLAYOLED_INC_API_DISPLAYOLED_H_
+
+/* Includes ------------------------------------------------------------------*/
+#include "ssd1306.h"
+
+/* Public function prototypes ------------------------------------------------*/
+void displayOLED_Init();
+void drawOutterCircle();
+
+
+#endif /* API_DISPLAYOLED_INC_API_DISPLAYOLED_H_ */

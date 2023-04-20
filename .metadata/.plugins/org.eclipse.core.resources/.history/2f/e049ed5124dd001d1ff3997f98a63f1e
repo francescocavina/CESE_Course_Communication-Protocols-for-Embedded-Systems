@@ -1,0 +1,121 @@
+/*
+ * API_debounce.c
+ *
+ *  Created on: Mar 27, 2023
+ *      Author: Francesco Cavina <francescocavina@outlook.com>
+ */
+
+/* Private function prototypes -----------------------------------------------*/
+static void buttonPressed();
+static void buttonReleased();
+
+/* Private define ------------------------------------------------------------*/
+#define DEBOUNCE_DELAY 40 // Time in [ms] for the de-bouncing delay
+
+/* Includes ------------------------------------------------------------------*/
+#include <stdbool.h>
+#include "API_debounce.h"
+#include "API_delay.h"
+#include "stm32f4xx_nucleo_144.h" 	/* <- BSP include */
+
+/* Private typedef -----------------------------------------------------------*/
+typedef enum{
+	// De-bouncing functionality FSM states
+	BUTTON_UP,
+	BUTTON_FALLING,
+	BUTTON_DOWN,
+	BUTTON_RAISING,
+} debounceState_t;
+
+/* Private variables */
+static bool_t keyStatus = false; 	// Flag variable -> true: push-button pressed; false: push-button released
+
+/* Private declarations ------------------------------------------------------*/
+static delay_t debouncing_delay; 	// Structure needed for the non-blocking delay API to use as a de-bounce delay
+static debounceState_t ESTADO_PB; 	// Structure containing the current state of the push-button (up, down, rising or falling)
+
+/* Public functions definitions ----------------------------------------------*/
+bool_t readKey() {
+	// This public function returns true whenever the push-button is pressed, otherwise it returns false
+	if(keyStatus == true) {
+		keyStatus = false;
+		return true;
+	} else {
+		return false;
+	}
+}
+
+void debounceFSM_init() {
+	// This public function initializes the finite state machine (FSM) for push-button de-bouncing,
+	// considering that it starts with the button up, i.e. the button not pressed.
+	// It doesn't receive any parameters and doesn't return any value.
+	ESTADO_PB = BUTTON_UP;
+
+	/* Non-blocking delay configuration */
+	delayInit(&debouncing_delay, DEBOUNCE_DELAY);
+}
+
+void debounceFSM_update() {
+	// This public function reads the input to the system (on-board push-button) and
+	// updates the state of the finite state machine (FSM), depending on it and
+	// the current state.
+	// It doesn't receive any parameters and doesn't return any value.
+
+	switch(ESTADO_PB) {
+		// Depending on the current state of the push-button, different paths can be taken
+		case BUTTON_UP:
+			if(BSP_PB_GetState(BUTTON_USER)) {
+				keyStatus = false;
+				ESTADO_PB = BUTTON_FALLING;
+			}
+			break;
+
+		case BUTTON_FALLING:
+			if(delayRead(&debouncing_delay)) {
+				// After the de-bounce delay
+				if(BSP_PB_GetState(BUTTON_USER)) {
+					ESTADO_PB = BUTTON_DOWN;
+					buttonPressed();
+				} else {
+					ESTADO_PB = BUTTON_UP;
+				}
+			}
+			break;
+
+		case BUTTON_DOWN:
+			if(!BSP_PB_GetState(BUTTON_USER)) {
+				keyStatus = true;
+				ESTADO_PB = BUTTON_RAISING;
+			}
+			break;
+
+		case BUTTON_RAISING:
+			if(delayRead(&debouncing_delay)) {
+				// After the de-bounce delay
+				if(!BSP_PB_GetState(BUTTON_USER)) {
+					ESTADO_PB = BUTTON_UP;
+					buttonReleased();
+				} else {
+					ESTADO_PB = BUTTON_DOWN;
+				}
+			}
+			break;
+
+		default:
+			debounceFSM_init();
+			break;
+	}
+}
+
+/* Private functions definitions ----------------------------------------------*/
+static void buttonPressed() {
+	// This private function toggles LED1 when the state is equal to BUTTON_FALLING
+	// It doesn't receive any parameters and doesn't return any value.
+	BSP_LED_Toggle(LED1);
+}
+
+static void buttonReleased() {
+	// This private function toggles LED3 when the state is equal to BUTTON_RAISING
+	// It doesn't receive any parameters and doesn't return any value.
+	BSP_LED_Toggle(LED3);
+}

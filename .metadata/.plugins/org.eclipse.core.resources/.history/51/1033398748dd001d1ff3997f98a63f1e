@@ -1,0 +1,13 @@
+/*
+ * API_magnetometer.h
+ *
+ *  Created on: Apr 17, 2023
+ *      Author: Francesco Cavina <francescocavina@outlook.com>
+ */
+
+#ifndef API_MAGNETOMETER_INC_API_MAGNETOMETER_H_
+#define API_MAGNETOMETER_INC_API_MAGNETOMETER_H_
+
+
+
+#endif /* API_MAGNETOMETER_INC_API_MAGNETOMETER_H_ */

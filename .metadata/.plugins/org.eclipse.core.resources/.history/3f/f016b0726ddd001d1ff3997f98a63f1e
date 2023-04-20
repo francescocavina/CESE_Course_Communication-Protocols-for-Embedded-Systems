@@ -1,0 +1,107 @@
+/*
+ * API_displayOLED.c
+ *
+ *  Created on: Apr 14, 2023
+ *      Author: Francesco Cavina <francescocavina@outlook.com>
+ */
+
+/* Includes ------------------------------------------------------------------*/
+#include "API_displayOLED.h"
+
+
+/* Private defines -----------------------------------------------------------*/
+#define OUTER_CIRCLE_ORIGIN_X	64
+#define	OUTER_CIRCLE_ORIGIN_Y	32
+#define OUTER_CIRCLE_RADIUS	31
+#define PI	3.141592654
+
+
+/* Public function definitions -----------------------------------------------*/
+void displayOLED_Init(void) {
+
+	/* Initialize OLED display */
+	/* Use of SSD1306 Driver */
+	SSD1306_Init();
+
+	/* Print "Welcome Message" */
+	SSD1306_Clear();
+	SSD1306_GotoXY (26, 6);
+	SSD1306_Puts ("Digital", &Font_11x18, SSD1306_COLOR_BLUE);
+	SSD1306_GotoXY (26, 40);
+	SSD1306_Puts ("Compass", &Font_11x18, SSD1306_COLOR_BLUE);
+	SSD1306_UpdateScreen();
+	HAL_Delay(2500);
+
+	SSD1306_Clear();
+	SSD1306_GotoXY (53, 23);
+	SSD1306_Puts ("by", &Font_11x18, SSD1306_COLOR_BLUE);
+	SSD1306_UpdateScreen();
+	HAL_Delay(1000);
+
+	SSD1306_Clear();
+	SSD1306_GotoXY (15, 6);
+	SSD1306_Puts ("Francesco", &Font_11x18, SSD1306_COLOR_BLUE);
+	SSD1306_GotoXY (31, 40);
+	SSD1306_Puts ("Cavina", &Font_11x18, SSD1306_COLOR_BLUE);
+	SSD1306_UpdateScreen();
+	HAL_Delay(2500);
+
+	SSD1306_Clear();
+}
+
+void drawOuterCircle(void) {
+
+	/* Draw compass outer circle | Use of SSD1306 Driver */
+	SSD1306_Clear();
+	SSD1306_DrawCircle(OUTER_CIRCLE_ORIGIN_X, OUTER_CIRCLE_ORIGIN_Y, OUTER_CIRCLE_RADIUS, 0x01);
+	SSD1306_UpdateScreen();
+}
+
+void drawArrow(uint16_t angle, SSD1306_COLOR_t color) {
+
+	uint8_t x2, y2 = 0;
+	double angle_rad = 0;
+
+	/* Check if first parameter (angle in degrees) is valid */
+	if(angle >= 0 && angle <= 360) {
+
+		/* Check if second parameter (color) is valid */
+		if(color == SSD1306_COLOR_BLACK || color == SSD1306_COLOR_BLUE) {
+
+			angle_rad = (double) angle * PI / 180;
+
+			/* Determine final arrow coordinates on display */
+			x2 = OUTER_CIRCLE_ORIGIN_X + (OUTER_CIRCLE_RADIUS - 3) * cos(angle_rad);
+			y2 = OUTER_CIRCLE_ORIGIN_Y + (OUTER_CIRCLE_RADIUS - 3) * sin(angle_rad);
+
+			/* Draw arrow line | Use of SSD1306 Driver */
+			SSD1306_DrawLine(OUTER_CIRCLE_ORIGIN_X, OUTER_CIRCLE_ORIGIN_Y, x2, y2, color);
+			SSD1306_UpdateScreen();
+		}
+	}
+}
+
+void writeData(void) {
+
+	int8_t xField[20] = "In X: ";
+	int8_t yField[20] = "In Y: ";
+	int8_t zField[20] = "In Z: ";
+
+	SSD1306_Clear();
+
+	/* Write title */
+	SSD1306_GotoXY(1, 0);
+	SSD1306_Puts("- Magnetic Field -", &Font_7x10, SSD1306_COLOR_BLUE);
+
+	/* Write raw data */
+	SSD1306_GotoXY(14, 21);
+	SSD1306_Puts(xField, &Font_7x10, SSD1306_COLOR_BLUE);
+
+	SSD1306_GotoXY(14, 37);
+	SSD1306_Puts(yField, &Font_7x10, SSD1306_COLOR_BLUE);
+
+	SSD1306_GotoXY(14, 53);
+	SSD1306_Puts(zField, &Font_7x10, SSD1306_COLOR_BLUE);
+
+	SSD1306_UpdateScreen();
+}

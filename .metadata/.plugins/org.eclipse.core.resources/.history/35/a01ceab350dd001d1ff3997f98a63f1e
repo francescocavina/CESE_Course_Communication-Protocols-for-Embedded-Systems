@@ -1,0 +1,13 @@
+/*
+ * mpu9250_port.h
+ *
+ *  Created on: Apr 17, 2023
+ *      Author: Francesco Cavina <francescocavina@outlook.com>
+ */
+
+#ifndef MPU9250_INC_MPU9250_PORT_H_
+#define MPU9250_INC_MPU9250_PORT_H_
+
+
+
+#endif /* MPU9250_INC_MPU9250_PORT_H_ */

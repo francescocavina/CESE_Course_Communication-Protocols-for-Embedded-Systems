@@ -1,0 +1,58 @@
+/**
+ * cp2102.h
+ *
+ * Created on: Apr 13, 2023
+ *      Author: Francesco Cavina <francescocavina@outlook.com>
+
+ *
+ * The CP2102 Module is a USB 2.0/UART converter and uses UART for communication
+ * with the Microcontroller. On the other side, the USB can be connected to
+ * a PC.
+ *
+ * This driver has different functions for reading and writing the module.
+ * Default pinout depends on platform used.
+ *
+ * CP2102   |STM32F429ZI      |DESCRIPTION
+
+ * VCC       |3.3V            |Power supply voltage
+ * GND       |GND             |Ground
+ * TXD       |PD6 (UART2_RX)  |TX (module) - RX (uC) communication
+ * RXD       |PB5 (UART2_TX)  |RX (module) - TX (uC) communication
+ *
+ *
+ * Note: In order to use this driver with other platform, only modify the
+ *       functions defined on PORT files.
+ *       Look for "MODIFIABLE BEGIN #" and "MODIFIABLE END #" labels.
+ *
+ *
+ * The whole driver is composed of the following files:
+ *
+ *       - cp2102.c			(DO NOT MODIFY!)
+ *       - cp2102.h			(DO NOT MODIFY!)
+ *       - cp2102_port.c	(modifiable)
+ *       - cp2102_port.h	(modifiable)
+ */
+
+
+#ifndef CP2102_INC_CP2102_H_
+#define CP2102_INC_CP2102_H_
+
+
+/* Includes ------------------------------------------------------------------*/
+#include "cp2102_port.h"
+
+
+/* Public defines ------------------------------------------------------------*/
+
+
+
+/* Public typedefs -----------------------------------------------------------*/
+
+
+
+/* Public function prototypes ------------------------------------------------*/
+
+
+
+
+#endif /* CP2102_INC_CP2102_H_ */

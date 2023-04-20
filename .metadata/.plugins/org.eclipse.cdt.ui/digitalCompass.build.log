@@ -1,0 +1,17 @@
+10:28:57 **** Incremental Build of configuration Debug for project digitalCompass ****
+make -j20 all 
+arm-none-eabi-gcc "../Drivers/API/Src/API_system.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F429xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I"/media/francesco/Data/Francesco/PdCeSE_workspace/digitalCompass/Drivers/SSD1306/Src" -I"/media/francesco/Data/Francesco/PdCeSE_workspace/digitalCompass/Drivers/SSD1306/Inc" -I"/media/francesco/Data/Francesco/PdCeSE_workspace/digitalCompass/Drivers/API/Inc" -I"/media/francesco/Data/Francesco/PdCeSE_workspace/digitalCompass/Drivers/API/Src" -I"/media/francesco/Data/Francesco/PdCeSE_workspace/digitalCompass/Drivers/BSP" -I"/media/francesco/Data/Francesco/PdCeSE_workspace/digitalCompass/Drivers/BSP/STM32F4xx_Nucleo_144" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Drivers/API/Src/API_system.d" -MT"Drivers/API/Src/API_system.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Drivers/API/Src/API_system.o"
+arm-none-eabi-gcc -o "digitalCompass.elf" @"objects.list"   -mcpu=cortex-m4 -T"/media/francesco/Data/Francesco/PdCeSE_workspace/digitalCompass/STM32F429ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="digitalCompass.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: digitalCompass.elf
+ 
+arm-none-eabi-size   digitalCompass.elf 
+arm-none-eabi-objdump -h -S  digitalCompass.elf  > "digitalCompass.list"
+   text	   data	    bss	    dec	    hex	filename
+  33336	    140	   2768	  36244	   8d94	digitalCompass.elf
+Finished building: default.size.stdout
+ 
+Finished building: digitalCompass.list
+ 
+
+10:28:59 Build Finished. 0 errors, 0 warnings. (took 1s.347ms)
+

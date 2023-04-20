@@ -1,0 +1,46 @@
+/*
+ * port.h
+ *
+ *  Created on: Apr 13, 2023
+ *      Author: franc
+ */
+
+#ifndef SSD1306_INC_PORT_H_
+#define SSD1306_INC_PORT_H_
+
+/**
+ * The SSD1306 OLED DISPLAY uses I2C for communication
+ *
+ * Library features functions for drawing lines, rectangles and circles.
+ *
+ * It also allows you to draw texts and characters using appropriate functions provided in library.
+ *
+ * Default pinout
+ *
+SSD1306    |STM32F10x    |DESCRIPTION
+
+VCC        |3.3V         |
+GND        |GND          |
+SCL        |PB6          |Serial clock line
+SDA        |PB7          |Serial data line
+ */
+
+
+/**
+  * @brief I2C2 Initialization Function
+  * @param None
+  * @retval None
+  */
+void MX_I2C2_Init(void);
+
+
+
+
+
+
+
+
+
+
+
+#endif /* SSD1306_INC_PORT_H_ */

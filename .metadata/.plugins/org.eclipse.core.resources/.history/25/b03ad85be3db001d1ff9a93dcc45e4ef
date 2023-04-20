@@ -1,0 +1,70 @@
+/*
+ * API_displayOLED.c
+ *
+ *  Created on: Apr 14, 2023
+ *      Author: francesco
+ */
+
+/* Includes ------------------------------------------------------------------*/
+#include "API_displayOLED.h"
+#include "math.h"
+
+/* Private defines -----------------------------------------------------------*/
+#define OUTTER_CIRCLE_ORIGIN_X	64
+#define	OUTTER_CIRCLE_ORIGIN_Y	32
+#define OUTTER_CIRCLE_RADIUS	31
+#define PI	3.141592654
+
+
+void displayOLED_Init() {
+
+	SSD1306_Init();
+
+	SSD1306_Clear();
+	SSD1306_GotoXY (26,6);
+	SSD1306_Puts ("Digital", &Font_11x18, 1);
+	SSD1306_GotoXY (26, 40);
+	SSD1306_Puts ("Compass", &Font_11x18, 1);
+	SSD1306_UpdateScreen();
+	HAL_Delay(2500);
+
+	SSD1306_Clear();
+	SSD1306_GotoXY (53,23);
+	SSD1306_Puts ("by", &Font_11x18, 1);
+	SSD1306_UpdateScreen();
+	HAL_Delay(1000);
+
+	SSD1306_Clear();
+	SSD1306_GotoXY (15,6);
+	SSD1306_Puts ("Francesco", &Font_11x18, 1);
+	SSD1306_GotoXY (31, 40);
+	SSD1306_Puts ("Cavina", &Font_11x18, 1);
+	SSD1306_UpdateScreen();
+	HAL_Delay(2500);
+
+	SSD1306_Clear();
+}
+
+void drawOutterCircle() {
+
+	SSD1306_DrawCircle(OUTTER_CIRCLE_ORIGIN_X, OUTTER_CIRCLE_ORIGIN_Y, OUTTER_CIRCLE_RADIUS, 0x01);
+	SSD1306_UpdateScreen();
+}
+
+void drawArrow(uint16_t angle, SSD1306_COLOR_t color) {
+
+	uint8_t x2, y2 = 0;
+	double angle_rad = (double) angle * PI / 180;
+
+	if(angle_rad < 0) {
+		angle_rad = floor(angle_rad);
+	} else if(angle_rad >= 0) {
+		angle_rad = floor(angle_rad);
+	}
+	//x2 = OUTTER_CIRCLE_ORIGIN_X + OUTTER_CIRCLE_RADIUS;
+	//y2 = OUTTER_CIRCLE_ORIGIN_Y;
+	x2 = OUTTER_CIRCLE_ORIGIN_X + OUTTER_CIRCLE_RADIUS * cos(angle_rad);
+	y2 = OUTTER_CIRCLE_ORIGIN_Y + OUTTER_CIRCLE_RADIUS * sin(angle_rad);
+	SSD1306_DrawLine(OUTTER_CIRCLE_ORIGIN_X, OUTTER_CIRCLE_ORIGIN_Y, x2, y2, color);
+	SSD1306_UpdateScreen();
+}

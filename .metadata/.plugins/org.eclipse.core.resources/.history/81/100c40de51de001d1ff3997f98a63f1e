@@ -1,0 +1,25 @@
+/*
+ * MPU925.h
+ *
+ *  Created on: 23 ��� 2018 �.
+ *      Author: Max
+ */
+
+#ifndef MPU925_H_
+#define MPU925_H_
+
+#include <stdint.h>
+/* MODIFIABLE BEGIN 1 */
+#include "stm32f4xx_hal.h"
+
+void mpu9250_read_reg(uint8_t reg, uint8_t *data, uint8_t len);
+void mpu9250_write_reg(uint8_t reg, uint8_t data);
+
+void MX_SPI2_Init(void);
+
+#endif /* MPU925_H_ */
+
+
+
+
+

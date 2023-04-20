@@ -1,0 +1,97 @@
+/*
+ * mpu9250_port.c
+ *
+ *  Created on: Apr 17, 2023
+ *      Author: Francesco Cavina <francescocavina@outlook.com>
+ */
+
+
+/* Includes ------------------------------------------------------------------*/
+#include "mpu9250_port.h"
+
+
+/* Private variables ---------------------------------------------------------*/
+SPI_HandleTypeDef hspi_sensor;
+
+
+/* Private function prototypes -----------------------------------------------*/
+/**
+  * @brief  This function is executed in case of error occurrence.
+  * @param  None
+  * @retval None
+  */
+static void Error_Handler(void);
+
+/**
+  * @brief  I2C1 Initialization Function
+  * @param  None
+  * @retval None
+  */
+static void MX_SPI2_Init(void);
+
+
+/* Private function definitions ----------------------------------------------*/
+/**
+  * @brief SPI2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_SPI2_Init(void) {
+
+	/* Initialize SPI peripheral */
+	/* MODIFIABLE BEGIN 1 */
+	hspi_sensor.Instance = SPI2;
+	hspi_sensor.Init.Mode = SPI_MODE_MASTER;
+	hspi_sensor.Init.Direction = SPI_DIRECTION_2LINES;
+	hspi_sensor.Init.DataSize = SPI_DATASIZE_8BIT;
+	hspi_sensor.Init.CLKPolarity = SPI_POLARITY_LOW;
+	hspi_sensor.Init.CLKPhase = SPI_PHASE_1EDGE;
+	hspi_sensor.Init.NSS = SPI_NSS_SOFT;
+	hspi_sensor.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+	hspi_sensor.Init.FirstBit = SPI_FIRSTBIT_MSB;
+	hspi_sensor.Init.TIMode = SPI_TIMODE_DISABLE;
+	hspi_sensor.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+	hspi_sensor.Init.CRCPolynomial = 10;
+	/* MODIFIABLE END 1 */
+
+	/**
+	 * To change GPIO for SPI peripheral, go to:
+	 *	- File: 	stm32fxxx_hal_msp.c
+	 * 	- Function: void HAL_SPI_MspInit(SPI_HandleTypeDef* spic)
+	 */
+
+	if (
+		/* MODIFIABLE BEGIN 2 */
+		HAL_SPI_Init(&hspi_sensor)
+		/* MODIFIABLE END 2 */
+		!= HAL_OK) {
+		Error_Handler();
+	}
+}
+
+static void Error_Handler(void) {
+
+  while (1) {}
+}
+
+
+/* Public function definitions -----------------------------------------------*/
+void mpu9250_SPI_Init(void) {
+
+	/* Initialize SPI peripheral */
+	/* MODIFIABLE BEGIN 3 */
+	MX_SPI2_Init();
+	/* MODIFIABLE END 3 */
+	uint32_t p = 250000;
+	while(p>0)
+		p--;
+}
+
+void mpu9250_SPI_Read(void) {
+
+	uint8_t dt[10];
+
+	/* MODIFIABLE BEGIN 6 */
+	HAL_SPI_Receive(&hspi_sensor, dt, sizeof(dt));
+	/* MODIFIABLE END 6 */
+}

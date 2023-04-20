@@ -1,0 +1,16 @@
+/*
+ * mpu9250.c
+ *
+ *  Created on: Apr 17, 2023
+ *      Author: Francesco Cavina <francescocavina@outlook.com>
+ */
+
+
+/* Includes ------------------------------------------------------------------*/
+#include "mpu9250_port.c"
+
+
+/* Public function definitions -----------------------------------------------*/
+void MPU9250_Init(void) {
+	MX_SPI2_Init();
+}

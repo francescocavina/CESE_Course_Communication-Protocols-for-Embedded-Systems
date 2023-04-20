@@ -1,0 +1,13 @@
+/*
+ * cp2102_port.h
+ *
+ *  Created on: Apr 19, 2023
+ *      Author: francesco
+ */
+
+#ifndef CP2102_INC_CP2102_PORT_H_
+#define CP2102_INC_CP2102_PORT_H_
+
+
+
+#endif /* CP2102_INC_CP2102_PORT_H_ */

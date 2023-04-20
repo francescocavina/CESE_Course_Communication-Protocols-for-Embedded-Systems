@@ -1,0 +1,62 @@
+/*
+ * API_system.c
+ *
+ *  Created on: Apr 17, 2023
+ *      Author: Francesco Cavina <francescocavina@outlook.com>
+ */
+
+
+/* Includes ------------------------------------------------------------------*/
+#include "API_displayOLED.h"
+#include "API_magnetometer.h"
+
+
+/* Private defines -----------------------------------------------------------*/
+#define SYSTEM_TIME	1
+
+
+/* Private typedef -----------------------------------------------------------*/
+typedef enum{
+	COMPASS_READING_SENSOR,
+	COMPASS_WRITING_DISPLAY,
+	RAWDATA_READING_SENSOR,
+	RAWDATA_WRITING_DISPLAY
+} systemState_t;
+
+
+/* Private variables ---------------------------------------------------------*/
+static delay_t system_delay;
+static systemState_t SYMSTATE;
+
+
+/* Public functions definitions ----------------------------------------------*/
+void systemInit() {
+
+	SYSSTATE = COMPASS_READING_SENSOR;
+
+	displayOLED_Init();
+
+	delayInit(&system_delay, SYSTEM_TIME);
+}
+
+void systemUpdate() {
+
+	switch(SYMSTATE) {
+		case COMPASS_READING_SENSOR:
+
+			break;
+		case COMPASS_WRITING_DISPLAY:
+
+			break;
+		case RAWDATA_READING_SENSOR:
+
+			break;
+		case RAWDATA_WRITING_DISPLAY:
+
+			break;
+		default:
+
+			break;
+	}
+
+}

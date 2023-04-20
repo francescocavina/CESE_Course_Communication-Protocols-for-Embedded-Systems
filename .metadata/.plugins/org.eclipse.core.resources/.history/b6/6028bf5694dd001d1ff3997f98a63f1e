@@ -1,0 +1,22 @@
+/*
+ * mpu9250.c
+ *
+ *  Created on: Apr 17, 2023
+ *      Author: Francesco Cavina <francescocavina@outlook.com>
+ */
+
+
+/* Includes ------------------------------------------------------------------*/
+#include "mpu9250.h"
+
+
+/* Public function definitions -----------------------------------------------*/
+uint8_t MPU9250_Init(void) {
+
+	/* Initialize I2C */
+	/* If not successful */
+	if(!mpu9250_SPI_Init()) {
+			return 0;
+	}
+
+}

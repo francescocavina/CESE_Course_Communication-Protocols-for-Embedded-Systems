@@ -1,0 +1,20 @@
+/*
+ * mpu9250.h
+ *
+ *  Created on: Apr 17, 2023
+ *      Author: Francesco Cavina <francescocavina@outlook.com>
+ */
+
+#ifndef MPU9250_INC_MPU9250_H_
+#define MPU9250_INC_MPU9250_H_
+
+
+/* Includes ------------------------------------------------------------------*/
+#include "mpu9250_port.h"
+
+
+
+void MPU9250_Init(void);
+
+
+#endif /* MPU9250_INC_MPU9250_H_ */

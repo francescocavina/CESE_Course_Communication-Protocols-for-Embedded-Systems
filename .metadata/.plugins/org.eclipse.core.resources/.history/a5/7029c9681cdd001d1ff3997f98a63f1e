@@ -1,0 +1,13 @@
+/*
+ * mpu9250.h
+ *
+ *  Created on: Apr 17, 2023
+ *      Author: francesco
+ */
+
+#ifndef MPU9250_INC_MPU9250_H_
+#define MPU9250_INC_MPU9250_H_
+
+
+
+#endif /* MPU9250_INC_MPU9250_H_ */

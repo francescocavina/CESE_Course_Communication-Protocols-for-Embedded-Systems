@@ -1,0 +1,3 @@
+../Drivers/API/Src/API_magnetometer.c:18:6:magnetometerInit	4	static
+../Drivers/API/Src/API_magnetometer.c:24:6:readMagnetometer	24	static
+../Drivers/API/Src/API_magnetometer.c:45:6:calculateArrowAngle	32	static

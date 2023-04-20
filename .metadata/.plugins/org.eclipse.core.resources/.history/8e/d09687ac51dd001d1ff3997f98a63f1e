@@ -1,0 +1,22 @@
+/*
+ * mpu9250_port.h
+ *
+ *  Created on: Apr 17, 2023
+ *      Author: Francesco Cavina <francescocavina@outlook.com>
+ */
+
+#ifndef MPU9250_INC_MPU9250_PORT_H_
+#define MPU9250_INC_MPU9250_PORT_H_
+
+
+/* Includes ------------------------------------------------------------------*/
+#include <stdint.h>
+/* MODIFIABLE BEGIN 1 */
+#include "stm32f4xx_hal.h"
+/* MODIFIABLE END 1 */
+
+
+/* Public function prototypes ------------------------------------------------*/
+
+
+#endif /* MPU9250_INC_MPU9250_PORT_H_ */

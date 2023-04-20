@@ -1,0 +1,5 @@
+../Drivers/SSD1306/Src/ssd1306_port.c:64:13:MX_I2C1_Init	8	static
+../Drivers/SSD1306/Src/ssd1306_port.c:94:13:Error_Handler	4	static
+../Drivers/SSD1306/Src/ssd1306_port.c:101:9:ssd1306_I2C_Init	16	static
+../Drivers/SSD1306/Src/ssd1306_port.c:126:6:ssd1306_I2C_WriteMulti	296	static
+../Drivers/SSD1306/Src/ssd1306_port.c:147:6:ssd1306_I2C_Write	32	static

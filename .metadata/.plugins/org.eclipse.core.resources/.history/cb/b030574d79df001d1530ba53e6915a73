@@ -1,0 +1,52 @@
+/*
+ * API_magnetometer.c
+ *
+ *  Created on: Apr 17, 2023
+ *      Author: Francesco Cavina <francescocavina@outlook.com>
+ */
+
+
+/* Includes ------------------------------------------------------------------*/
+#include "API_magnetometer.h"
+
+
+/* Private defines -----------------------------------------------------------*/
+#define PI	3.141592654
+
+
+/* Public function definitions -----------------------------------------------*/
+void magnetometerInit(void) {
+	NULL;
+}
+
+uint16_t readMagnetometer(magnetometer_t sensor) {
+
+	double ang = 0;
+
+	srand(HAL_GetTick());
+
+	int16_t newValueX = rand() % 9600 - 4800;
+	int16_t newValueY = rand() % 9600 - 4800;
+	int16_t newValueZ = rand() % 9600 - 4800;
+
+	if(newValueX != sensor.lastValueX || newValueY != sensor.lastValueY || newValueZ != sensor.lastValueZ) {
+		sensor.lastValueX = newValueX;
+		sensor.lastValueY = newValueY;
+		sensor.lastValueZ = newValueZ;
+		sensor.UPDATE_FLAG = true;
+	} else {
+		sensor.UPDATE_FLAG = false;
+	}
+
+	ang = atan((double)sensor.lastValueY / sensor.lastValueX);
+
+	if((sensor.lastValueX >= 0 && sensor.lastValueY >= 0) || (sensor.lastValueX >= 0 && sensor.lastValueY < 0)) {
+		sensor.compass_angle = ang;
+	} else if((sensor.lastValueX < 0 && sensor.lastValueY >= 0) || (sensor.lastValueX < 0 && sensor.lastValueY < 0)) {
+		sensor.compass_angle = PI + ang;
+	}
+
+	if(sensor.compass_angle < 0) {
+		sensor.compass_angle += 2 * PI;
+	}
+}

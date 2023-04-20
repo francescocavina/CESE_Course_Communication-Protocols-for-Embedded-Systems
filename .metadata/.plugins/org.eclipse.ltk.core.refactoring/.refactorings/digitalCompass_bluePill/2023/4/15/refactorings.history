@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;digitalCompass/Drivers/SSD1306/Inc/port.h&apos; to &apos;ssd1306_port.h&apos;" description="Rename resource &apos;port.h&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Drivers/SSD1306/Inc/port.h" name="ssd1306_port.h" stamp="1681441343507" updateReferences="true"/>&#x0A;<refactoring comment="Rename resource &apos;digitalCompass/Drivers/SSD1306/Src/port.c&apos; to &apos;ssd1306_port.c&apos;" description="Rename resource &apos;port.c&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Drivers/SSD1306/Src/port.c" name="ssd1306_port.c" stamp="1681441351927" updateReferences="true"/>
+</session>

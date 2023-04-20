@@ -1,0 +1,48 @@
+/*
+ * API_magnetometer.c
+ *
+ *  Created on: Apr 17, 2023
+ *      Author: Francesco Cavina <francescocavina@outlook.com>
+ */
+
+
+/* Includes ------------------------------------------------------------------*/
+#include "API_magnetometer.h"
+
+
+/* Public function definitions -----------------------------------------------*/
+void magnetometerInit(void) {
+	NULL;
+}
+
+uint16_t readMagnetometer(void) {
+
+	double ang = 0;
+
+	srand(HAL_GetTick());
+
+	int16_t newValueX = rand() % 9600 - 4800;
+	int16_t newValueY = rand() % 9600 - 4800;
+	int16_t newValueZ = rand() % 9600 - 4800;
+
+	if(newValueX != lastValueX || newValueY != lastValueY || newValueZ != lastValueZ) {
+		lastValueX = newValueX;
+		lastValueY = newValueY;
+		lastValueZ = newValueZ;
+		UPDATE_FLAG = true;
+	} else {
+		UPDATE_FLAG = false;
+	}
+
+	ang = atan((double)lastValueY / lastValueX);
+
+	if((lastValueX >= 0 && lastValueY >= 0) || (lastValueX >= 0 && lastValueY < 0)) {
+		compass_angle = ang;
+	} else if((lastValueX < 0 && lastValueY >= 0) || (lastValueX < 0 && lastValueY < 0)) {
+		compass_angle = PI + ang;
+	}
+
+	if(compass_angle < 0) {
+		compass_angle += 2 * PI;
+	}
+}

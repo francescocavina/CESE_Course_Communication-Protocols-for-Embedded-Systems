@@ -1,0 +1,23 @@
+/*
+ * API_magnetometer.c
+ *
+ *  Created on: Apr 17, 2023
+ *      Author: Francesco Cavina <francescocavina@outlook.com>
+ */
+
+
+/* Includes ------------------------------------------------------------------*/
+#include "API_magnetometer.h"
+
+
+
+/* Public function definitions -----------------------------------------------*/
+uint16_t readMagnetometer(void) {
+	static int16_t accel_data;
+	static uint8_t imu_data[14];
+
+	mpu9250_SPI_Read(59, imu_data, sizeof(imu_data));
+	accel_data = ((int16_t) imu_data[0] << 8) + imu_data[1];
+
+	return accel_data;
+}

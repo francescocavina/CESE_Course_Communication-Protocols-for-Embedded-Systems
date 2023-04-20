@@ -1,0 +1,48 @@
+/*
+ * API_displayOLED.h
+ *
+ * Created on: Apr 14, 2023
+ *      Author: Francesco Cavina <francescocavina@outlook.com>
+ */
+
+#ifndef API_DISPLAYOLED_INC_API_DISPLAYOLED_H_
+#define API_DISPLAYOLED_INC_API_DISPLAYOLED_H_
+
+
+/* Includes ------------------------------------------------------------------*/
+#include "ssd1306.h"
+#include "math.h"
+
+
+/* Public function prototypes ------------------------------------------------*/
+/**
+ * @brief  Initializes OLED Display
+ * @param  None
+ * @retval None
+ */
+void displayInit(void);
+
+/**
+ *  @brief 	Draws compass outer circle
+ *  @param 	None
+ *  @retval None
+ */
+void drawOuterCircle(void);
+
+/**
+ * @brief 	Draws an arrow to point the north
+ * @param 	Angle in degrees (0° to 360°)
+ * @param 	Arrow color	(black or blue)
+ * @retval 	None
+ */
+void drawArrow(uint16_t angle, SSD1306_COLOR_t color);
+
+/**
+ * @brief  Writes raw data coming from sensor
+ * @param
+ * @retval None
+ */
+void writeData(void);
+
+
+#endif /* API_DISPLAYOLED_INC_API_DISPLAYOLED_H_ */

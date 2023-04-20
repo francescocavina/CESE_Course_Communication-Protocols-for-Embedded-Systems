@@ -1,0 +1,2 @@
+../Drivers/API/Src/API_system.c:32:6:systemInit	8	static
+../Drivers/API/Src/API_system.c:50:6:systemUpdate	8	static

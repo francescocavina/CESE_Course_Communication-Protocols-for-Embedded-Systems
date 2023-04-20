@@ -1,0 +1,20 @@
+/*
+ * API_magnetometer.c
+ *
+ *  Created on: Apr 17, 2023
+ *      Author: Francesco Cavina <francescocavina@outlook.com>
+ */
+
+
+/* Includes ------------------------------------------------------------------*/
+#include "API_magnetometer.h"
+
+
+/* Public function definitions -----------------------------------------------*/
+void magnetometerInit(void) {
+	MPU9250_Init();
+}
+
+uint16_t readMagnetometer(void) {
+	return 0;
+}

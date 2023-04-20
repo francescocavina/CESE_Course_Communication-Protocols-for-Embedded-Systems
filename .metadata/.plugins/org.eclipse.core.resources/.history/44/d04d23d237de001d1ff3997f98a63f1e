@@ -1,0 +1,109 @@
+/*
+ * mpu9250.c
+ *
+ *  Created on: Apr 17, 2023
+ *      Author: Francesco Cavina <francescocavina@outlook.com>
+ */
+
+
+/* Includes ------------------------------------------------------------------*/
+#include "mpu9250.h"
+
+
+/* Private defines -----------------------------------------------------------*/
+/* AK8963 registers */
+#define AK8963_I2C_ADDR  0x0C
+#define AK8963_WHO_AM_I  0x00	// (R) Default is 0x48
+#define AK8963_INFO      0x01	// (R) Device information
+#define AK8963_ST1       0x02  	// (R) Data ready bit 0
+#define AK8963_XOUT_L    0x03  	// (R) HXL[7:0]: X-axis measurement data lower 8bit
+#define AK8963_XOUT_H    0x04	// (R) HXH[15:8]: X-axis measurement data higher 8bit
+#define AK8963_YOUT_L    0x05	// (R) HYL[7:0]: Y-axis measurement data lower 8bit
+#define AK8963_YOUT_H    0x06	// (R) HYH[15:8]: Y-axis measurement data higher 8bit
+#define AK8963_ZOUT_L    0x07	// (R) HZL[7:0]: Z-axis measurement data lower 8bit
+#define AK8963_ZOUT_H    0x08	// (R) HZH[15:8]: Z-axis measurement data higher 8bit
+#define AK8963_ST2       0x09	// (R) Data overflow
+#define AK8963_CNTL      0x0A	// (R) Power down (0000), single-measurement (0001), self-test (1000) and Fuse ROM (1111) modes on bits 3:0
+#define AK8963_ASTC      0x0C	// Self test control
+#define AK8963_I2CDIS    0x0F	// I2C disable
+#define AK8963_ASAX      0x10	// X-axis sensitivity adjustment value
+#define AK8963_ASAY      0x11	// Y-axis sensitivity adjustment value
+#define AK8963_ASAZ      0x12	// Z-axis sensitivity adjustment value
+
+
+#define I2C_SLV0_ADDR 	0x25
+#define I2C_SLV0_REG 	0x26
+#define I2C_SLV0_DO 	0x63
+#define I2C_SLV0_CTRL 	0x27
+#define I2C_SLV0_EN 	0x80
+#define I2C_READ_FLAG 	0x80
+
+
+/* Private variables ---------------------------------------------------------*/
+//static double magX = 0;
+//static double magY = 0;
+//static double magZ = 0;
+
+static uint8_t _buffer[21];
+
+
+/* Public function definitions -----------------------------------------------*/
+uint8_t MPU9250_Init(void) {
+
+	/* Initialize I2C */
+	/* If not successful */
+	if(!mpu9250_SPI_Init()) {
+			return 0;
+	}
+
+
+	return 0; // FIX THIS
+}
+
+uint16_t MPU9250_WhoAmI() {
+
+	// read the WHO AM I register
+	readAK8963Registers(AK8963_WHO_AM_I,1,_buffer);
+	// return the register value
+	return _buffer[0];
+}
+
+void readAK8963Registers(uint8_t subAddress, uint8_t count, uint8_t* dest) {
+	// set slave 0 to the AK8963 and set for read
+	writeRegister(I2C_SLV0_ADDR, AK8963_I2C_ADDR | I2C_READ_FLAG);
+
+	// set the register to the desired AK8963 sub address
+	writeRegister(I2C_SLV0_REG,subAddress);
+
+	// enable I2C and request the bytes
+	writeRegister(I2C_SLV0_CTRL,I2C_SLV0_EN | count);
+
+	// takes some time for these registers to fill
+	HAL_Delay(1);
+
+	// read the bytes off the MPU9250 EXT_SENS_DATA registers
+	//readRegisters(EXT_SENS_DATA_00,count,dest);
+}
+
+/* writes a byte to MPU9250 register given a register address and data */
+void writeRegister(uint8_t subAddress, uint8_t data) {
+	MPU_SPI_Write(&data, subAddress, 1);
+	HAL_Delay(10);
+}
+
+void MPU_SPI_Write(uint8_t *pBuffer, uint8_t WriteAddr, uint16_t NumByteToWrite) {
+	SPIx_WriteRead(WriteAddr);
+	while(NumByteToWrite>=0x01) {
+		SPIx_WriteRead(*pBuffer);
+		NumByteToWrite--;
+		pBuffer++;
+	}
+}
+
+uint8_t SPIx_WriteRead(uint8_t *Byte) {
+	uint8_t receivedByte = 0;
+	if(mpu9250_SPI_WriteRead(*Byte, &receivedByte)!=HAL_OK) {
+		return -1;
+	} else {}
+	return receivedByte;
+}

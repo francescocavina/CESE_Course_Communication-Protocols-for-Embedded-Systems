@@ -1,0 +1,44 @@
+/*
+ * API_magnetometer.h
+ *
+ *  Created on: Apr 17, 2023
+ *      Author: Francesco Cavina <francescocavina@outlook.com>
+ */
+
+
+#ifndef API_MAGNETOMETER_INC_API_MAGNETOMETER_H_
+#define API_MAGNETOMETER_INC_API_MAGNETOMETER_H_
+
+
+/* Includes ------------------------------------------------------------------*/
+#include <stdint.h>
+#include <stdbool.h>
+
+
+/* Public typedefs -----------------------------------------------------------*/
+typedef struct {
+	int16_t lastValueX;
+	int16_t lastValueY;
+	int16_t lastValueZ;
+	double compass_angle;
+	bool UPDATE_FLAG;
+} magnetometer_t;
+
+
+/* Public function prototypes ------------------------------------------------*/
+/**
+ * @brief
+ * @param
+ * @retval
+ */
+void magnetometerInit(void);
+
+/**
+ * @brief
+ * @param  None
+ * @retval
+ */
+uint16_t readMagnetometer(void);
+
+
+#endif /* API_MAGNETOMETER_INC_API_MAGNETOMETER_H_ */

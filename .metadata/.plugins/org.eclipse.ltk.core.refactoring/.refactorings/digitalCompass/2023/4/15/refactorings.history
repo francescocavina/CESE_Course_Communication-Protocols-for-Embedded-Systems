@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;digitalCompass/Drivers/API_displayOLED/iNC&apos; to &apos;Inc&apos;" description="Rename resource &apos;iNC&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Drivers/API_displayOLED/iNC" name="Inc" stamp="1681526515081" updateReferences="true"/>
+</session>
