@@ -1,0 +1,71 @@
+/*
+ * API_magnetometer.c
+ *
+ *  Created on: Apr 17, 2023
+ *      Author: Francesco Cavina <francescocavina@outlook.com>
+ */
+
+
+/* Includes ------------------------------------------------------------------*/
+#include "API_magnetometer.h"
+
+
+/* Private defines -----------------------------------------------------------*/
+#define PI	3.141592654
+
+
+/* Public function definitions -----------------------------------------------*/
+void magnetometerInit(void) {
+
+	/* Initiate magnetometer sensor */
+	/* EMPTY */
+}
+
+void readMagnetometer(magnetometer_t *sensor) {
+
+	/* Check parameter */
+	if(sensor == NULL) {
+		return;
+	}
+
+	/* Set the seed for random number generation */
+	srand(HAL_GetTick());
+
+	/* Generate random sensor readings */
+	int16_t newValueX = rand() % 9600 - 4800;
+	int16_t newValueY = rand() % 9600 - 4800;
+	int16_t newValueZ = rand() % 9600 - 4800;
+
+	/* Compare last value read with the new value read and update */
+	if(newValueX != sensor->lastValueX || newValueY != sensor->lastValueY || newValueZ != sensor->lastValueZ) {
+		sensor->lastValueX = newValueX;
+		sensor->lastValueY = newValueY;
+		sensor->lastValueZ = newValueZ;
+		sensor->UPDATE_FLAG = true;
+	} else {
+		sensor->UPDATE_FLAG = false;
+	}
+}
+
+void calculateArrowAngle(magnetometer_t *sensor) {
+
+	/* Check parameter */
+	if(sensor == NULL) {
+		return;
+	}
+
+	double ang = 0;
+
+	/* Calculate the arrow angle for the compass based on the readings performed */
+	ang = atan((double)sensor->lastValueY / sensor->lastValueX);
+
+	if((sensor->lastValueX >= 0 && sensor->lastValueY >= 0) || (sensor->lastValueX >= 0 && sensor->lastValueY < 0)) {
+		sensor->arrowAngle = ang;
+	} else if((sensor->lastValueX < 0 && sensor->lastValueY >= 0) || (sensor->lastValueX < 0 && sensor->lastValueY < 0)) {
+		sensor->arrowAngle = PI + ang;
+	}
+
+	if(sensor->arrowAngle < 0) {
+		sensor->arrowAngle += 2 * PI;
+	}
+}

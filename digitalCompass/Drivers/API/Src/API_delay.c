@@ -6,12 +6,12 @@
  */
 
 
+/* Includes ------------------------------------------------------------------*/
 #include "API_delay.h"
 #include "stm32f4xx_hal.h"  		/* <- HAL include */
 
 
-/* Implementation of non-blocking delay functions */
-
+/* Public function definitions -----------------------------------------------*/
 void delayInit(delay_t * delay, tick_t duration) {
 	// This function configures a non-blocking delay by setting the delay duration
 	// and setting the running flag to false.
@@ -41,6 +41,7 @@ bool_t delayRead(delay_t * delay) {
 	}
 	return false;
 }
+
 void delayWrite(delay_t * delay, tick_t duration) {
 	// This function allows to change the delay duration of a previously configured
 	// non-blocking delay inside the super-loop.

@@ -5,6 +5,7 @@
  *      Author: Francesco Cavina <francescocavina@outlook.com>
  */
 
+
 #ifndef API_INC_API_DEBOUNCE_H_
 #define API_INC_API_DEBOUNCE_H_
 
@@ -13,6 +14,7 @@
 #include <stdbool.h>
 #include "API_delay.h"
 #include "stm32f4xx_nucleo_144.h" 	/* <- BSP include */
+
 
 /* Public typedefs ----------------------------------------------------------*/
 typedef bool bool_t;

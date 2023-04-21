@@ -23,6 +23,11 @@ void magnetometerInit(void) {
 
 void readMagnetometer(magnetometer_t *sensor) {
 
+	/* Check parameter (pointer to magnetometer_t structure) */
+	if(sensor == NULL) {
+		return;
+	}
+
 	/* Set the seed for random number generation */
 	srand(HAL_GetTick());
 
@@ -44,9 +49,14 @@ void readMagnetometer(magnetometer_t *sensor) {
 
 void calculateArrowAngle(magnetometer_t *sensor) {
 
+	/* Check parameter (pointer to magnetometer_t structure) */
+	if(sensor == NULL) {
+		return;
+	}
+
 	double ang = 0;
 
-	/* Calculate the arrow angle for the compass based on the readings done */
+	/* Calculate the arrow angle for the compass based on the readings performed */
 	ang = atan((double)sensor->lastValueY / sensor->lastValueX);
 
 	if((sensor->lastValueX >= 0 && sensor->lastValueY >= 0) || (sensor->lastValueX >= 0 && sensor->lastValueY < 0)) {

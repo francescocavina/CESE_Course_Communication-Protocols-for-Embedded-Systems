@@ -20,7 +20,8 @@
 
 /* Public typedefs -----------------------------------------------------------*/
 /**
- * @brief
+ * @brief Contains important data from the sensor readings to update the MEF on
+ * @brief @ref API_system.c and print the display
  * @field lastValueX:  last value of magnetic field in the X axis
  * @field lastValueY:  last value of magnetic field in the Y axis
  * @field lastValueZ:  last value of magnetic field in the > axis

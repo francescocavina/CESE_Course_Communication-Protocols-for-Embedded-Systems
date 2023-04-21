@@ -9,9 +9,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "API_system.h"
 
-
 /* Private defines -----------------------------------------------------------*/
-#define SYSTEM_TIME	1
+#define SYSTEM_TIME	400
 
 
 /* Private typedef -----------------------------------------------------------*/
@@ -26,17 +25,7 @@ typedef enum{
 /* Private variables ---------------------------------------------------------*/
 static delay_t system_delay;
 static systemState_t SYSSTATE;
-static bool_t UPDATE_FLAG = false;
-static uint16_t lastValue = 0;
-
-
-/* Private function prototypes -----------------------------------------------*/
-/**
- *  @brief
- *  @param  None
- *  @retval None
- */
-static void readSensor(void);
+static magnetometer_t sensor;
 
 
 /* Public functions definitions ----------------------------------------------*/
@@ -49,13 +38,21 @@ void systemInit(void) {
 	BSP_PB_Init(BUTTON_USER, BUTTON_MODE_GPIO);
 
 	/* Initialize magnetometer sensor */
-	//magnetometerInit();
+	magnetometerInit();
+	sensor.lastValueX = 0;
+	sensor.lastValueY = 0;
+	sensor.lastValueZ = 0;
+	sensor.arrowAngle = 0;
+	sensor.UPDATE_FLAG = false;
 
 	/* Initialize OLED display */
 	displayInit();
 
 	/* Initialize system delay */
 	delayInit(&system_delay, SYSTEM_TIME);
+
+	/* Initialize debounce feature  for on-board push-button*/
+	debounceFSM_init();
 }
 
 void systemUpdate(void) {
@@ -66,42 +63,57 @@ void systemUpdate(void) {
 
 		case COMPASS_READING_SENSOR:
 			if(readKey()) {
+				/* When push-button pressed, change system state */
 				SYSSTATE = RAWDATA_READING_SENSOR;
 			} else if(delayRead(&system_delay)) {
+				/* When time is up, change system state */
 				SYSSTATE = COMPASS_WRITING_DISPLAY;
 			}
-			readSensor();
+			readMagnetometer(&sensor);
 			break;
 
 		case COMPASS_WRITING_DISPLAY:
 			if(readKey()) {
+				/* When push-button pressed, change system state */
 				SYSSTATE = RAWDATA_READING_SENSOR;
 			} else if(delayRead(&system_delay)) {
+				/* When time is up, change system state */
 				SYSSTATE = COMPASS_READING_SENSOR;
 			} else {
-				if(UPDATE_FLAG == false) {
+				if(sensor.UPDATE_FLAG == true) {
+					/* New data available to be shown on the display */
 					drawOuterCircle();
-					drawArrow(45, SSD1306_COLOR_BLUE);
+					calculateArrowAngle(&sensor);
+					drawArrow(sensor.arrowAngle, SSD1306_COLOR_BLUE);
+					sensor.UPDATE_FLAG = false;
 				}
 			}
 			break;
 
 		case RAWDATA_READING_SENSOR:
 			if(readKey()) {
+				/* When push-button pressed, change system state */
 				SYSSTATE = COMPASS_READING_SENSOR;
 			} else if(delayRead(&system_delay)) {
+				/* When time is up, change system state */
 				SYSSTATE = RAWDATA_WRITING_DISPLAY;
 			}
-			readSensor();
+			readMagnetometer(&sensor);
 			break;
 
 		case RAWDATA_WRITING_DISPLAY:
 			if(readKey()) {
+				/* When push-button pressed, change system state */
 				SYSSTATE = COMPASS_READING_SENSOR;
 			} else if(delayRead(&system_delay)) {
+				/* When time is up, change system state */
 				SYSSTATE = RAWDATA_READING_SENSOR;
 			} else {
-				writeData(45, 45, 45);
+				if(sensor.UPDATE_FLAG == true) {
+					/* New data available to be shown on the display */
+					writeData(sensor.lastValueX, sensor.lastValueY, sensor.lastValueZ);
+					sensor.UPDATE_FLAG = false;
+				}
 			}
 			break;
 
@@ -109,20 +121,4 @@ void systemUpdate(void) {
 			systemInit();
 			break;
 	}
-}
-
-
-/* Private funcTion definitions ----------------------------------------------*/
-static void readSensor(void) {
-
-	uint16_t newValueX = rand() % 9600 - 4800;
-	uint16_t newValueY = rand() % 9600 - 4800;
-	uint16_t newValueY = rand() % 9600 - 4800;
-
-	/*if(newValue != lastValue) {
-		UPDATE_FLAG = true;
-		lastValue = newValue;
-	} else {
-		UPDATE_FLAG = false;
-	}*/
 }

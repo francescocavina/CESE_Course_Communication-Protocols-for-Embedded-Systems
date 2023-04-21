@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="compass_angle"/>
+		<item key="selection" value="MODIFY"/>
 		<item key="wrap" value="true"/>
-		<item key="casesensitive" value="false"/>
+		<item key="casesensitive" value="true"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="MODIFIABLE"/>
+			<item value="msp"/>
+			<item value="gpio"/>
+			<item value="arrow_angle"/>
 			<item value="angle"/>
 			<item value="GPIO"/>
 			<item value="RCC"/>
@@ -15,6 +19,8 @@
 			<item value="I2C"/>
 		</list>
 		<list key="replacehistory">
+			<item value="MODIFY"/>
+			<item value="arrowAngle"/>
 			<item value="compass_angle"/>
 			<item value=""/>
 		</list>

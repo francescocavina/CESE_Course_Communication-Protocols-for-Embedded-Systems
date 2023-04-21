@@ -19,7 +19,7 @@
  *
  * Note: In order to use this driver with other platform, only modify the
  *       functions defined on PORT files.
- *       Look for "MODIFIABLE BEGIN #" and "MODIFIABLE END #" labels.
+ *       Look for "MODIFY BEGIN #" and "MODIFY END #" labels.
  *
  *
  * The whole driver is composed of the following files:
@@ -37,9 +37,9 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
-/* MODIFIABLE BEGIN 1 */
+/* MODIFY BEGIN 1 */
 #include "stm32f4xx_hal.h"
-/* MODIFIABLE END 1 */
+/* MODIFY END 1 */
 
 
 /* Public function prototypes ------------------------------------------------*/

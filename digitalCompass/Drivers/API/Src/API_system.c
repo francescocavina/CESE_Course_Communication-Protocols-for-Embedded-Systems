@@ -9,6 +9,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "API_system.h"
 
+
 /* Private defines -----------------------------------------------------------*/
 #define SYSTEM_TIME	400
 
@@ -39,12 +40,20 @@ void systemInit(void) {
 
 	/* Initialize magnetometer sensor */
 	magnetometerInit();
+	sensor.lastValueX = 0;
+	sensor.lastValueY = 0;
+	sensor.lastValueZ = 0;
+	sensor.arrowAngle = 0;
+	sensor.UPDATE_FLAG = false;
 
 	/* Initialize OLED display */
 	displayInit();
 
 	/* Initialize system delay */
 	delayInit(&system_delay, SYSTEM_TIME);
+
+	/* Initialize debounce feature for on-board push-button*/
+	debounceFSM_init();
 }
 
 void systemUpdate(void) {
@@ -55,8 +64,10 @@ void systemUpdate(void) {
 
 		case COMPASS_READING_SENSOR:
 			if(readKey()) {
+				/* When push-button pressed, change system state */
 				SYSSTATE = RAWDATA_READING_SENSOR;
 			} else if(delayRead(&system_delay)) {
+				/* When time is up, change system state */
 				SYSSTATE = COMPASS_WRITING_DISPLAY;
 			}
 			readMagnetometer(&sensor);
@@ -64,11 +75,14 @@ void systemUpdate(void) {
 
 		case COMPASS_WRITING_DISPLAY:
 			if(readKey()) {
+				/* When push-button pressed, change system state */
 				SYSSTATE = RAWDATA_READING_SENSOR;
 			} else if(delayRead(&system_delay)) {
+				/* When time is up, change system state */
 				SYSSTATE = COMPASS_READING_SENSOR;
 			} else {
 				if(sensor.UPDATE_FLAG == true) {
+					/* New data available to be shown on the display */
 					drawOuterCircle();
 					calculateArrowAngle(&sensor);
 					drawArrow(sensor.arrowAngle, SSD1306_COLOR_BLUE);
@@ -79,8 +93,10 @@ void systemUpdate(void) {
 
 		case RAWDATA_READING_SENSOR:
 			if(readKey()) {
+				/* When push-button pressed, change system state */
 				SYSSTATE = COMPASS_READING_SENSOR;
 			} else if(delayRead(&system_delay)) {
+				/* When time is up, change system state */
 				SYSSTATE = RAWDATA_WRITING_DISPLAY;
 			}
 			readMagnetometer(&sensor);
@@ -88,11 +104,14 @@ void systemUpdate(void) {
 
 		case RAWDATA_WRITING_DISPLAY:
 			if(readKey()) {
+				/* When push-button pressed, change system state */
 				SYSSTATE = COMPASS_READING_SENSOR;
 			} else if(delayRead(&system_delay)) {
+				/* When time is up, change system state */
 				SYSSTATE = RAWDATA_READING_SENSOR;
 			} else {
 				if(sensor.UPDATE_FLAG == true) {
+					/* New data available to be shown on the display */
 					writeData(sensor.lastValueX, sensor.lastValueY, sensor.lastValueZ);
 					sensor.UPDATE_FLAG = false;
 				}

@@ -66,9 +66,7 @@ uint8_t SSD1306_Init(void) {
 
 	/* Initialize I2C */
 	/* Check connection success */
-	if(ssd1306_I2C_Init(SSD1306_I2C_ADDR)) {
-		return 1;
-	} else {
+	if(!ssd1306_I2C_Init(SSD1306_I2C_ADDR)) {
 		return 0;
 	}
 

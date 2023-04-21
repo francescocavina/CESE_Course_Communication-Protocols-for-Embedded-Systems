@@ -60,6 +60,11 @@ void drawArrow(double angle, SSD1306_COLOR_t color) {
 
 	uint8_t x2, y2 = 0;
 
+	/* Check second parameter (color of the circle) */
+	if(color != SSD1306_COLOR_BLACK && color != SSD1306_COLOR_BLUE) {
+		return;
+	}
+
 	/* Check if first parameter (angle in degrees) is valid */
 	if(angle >= 0 && angle <= 2 * PI) {
 
@@ -74,6 +79,8 @@ void drawArrow(double angle, SSD1306_COLOR_t color) {
 			SSD1306_DrawLine(OUTER_CIRCLE_ORIGIN_X, OUTER_CIRCLE_ORIGIN_Y, x2, y2, color);
 			SSD1306_UpdateScreen();
 		}
+	} else {
+		return;
 	}
 }
 
@@ -123,14 +130,15 @@ void writeData(int16_t x, int16_t y, int16_t z) {
 	SSD1306_GotoXY(14, 53);
 	SSD1306_Puts(zField, &Font_7x10, SSD1306_COLOR_BLUE);
 
+	/* Write magnetic field units */
 	SSD1306_GotoXY(92, 21);
-	SSD1306_Puts(" uT", &Font_7x10, SSD1306_COLOR_BLUE);
+	SSD1306_Puts((uint8_t*) " uT", &Font_7x10, SSD1306_COLOR_BLUE);
 
 	SSD1306_GotoXY(92, 37);
-	SSD1306_Puts(" uT", &Font_7x10, SSD1306_COLOR_BLUE);
+	SSD1306_Puts((uint8_t*) " uT", &Font_7x10, SSD1306_COLOR_BLUE);
 
 	SSD1306_GotoXY(92, 53);
-	SSD1306_Puts(" uT", &Font_7x10, SSD1306_COLOR_BLUE);
+	SSD1306_Puts((uint8_t*) " uT", &Font_7x10, SSD1306_COLOR_BLUE);
 
 	SSD1306_UpdateScreen();
 }

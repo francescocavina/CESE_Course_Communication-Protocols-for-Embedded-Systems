@@ -19,7 +19,7 @@
  *
  * Note: In order to use this driver with other platform, only modify the
  *       functions defined on PORT files.
- *       Look for "MODIFIABLE BEGIN #" and "MODIFIABLE END #" labels.
+ *       Look for "MODIFY BEGIN #" and "MODIFY END #" labels.
  *
  *
  * The whole driver is composed of the following files:
@@ -64,7 +64,7 @@ static void MX_I2C1_Init(void);
 static void MX_I2C1_Init(void) {
 
 	/* Initialize I2C peripheral */
-	/* MODIFIABLE BEGIN 1 */
+	/* MODIFY BEGIN 1 */
 	hi2c_display.Instance = I2C1;
 	hi2c_display.Init.ClockSpeed = 400000;
 	hi2c_display.Init.DutyCycle = I2C_DUTYCYCLE_2;
@@ -74,7 +74,7 @@ static void MX_I2C1_Init(void) {
 	hi2c_display.Init.OwnAddress2 = 0;
 	hi2c_display.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
 	hi2c_display.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-	/* MODIFIABLE END 1 */
+	/* MODIFY END 1 */
 
 	/**
 	 * To change GPIO for I2C peripheral, go to:
@@ -83,9 +83,9 @@ static void MX_I2C1_Init(void) {
 	 */
 
 	if (
-		/* MODIFIABLE BEGIN 2 */
+		/* MODIFY BEGIN 2 */
 		HAL_I2C_Init(&hi2c_display)
-		/* MODIFIABLE END 2 */
+		/* MODIFY END 2 */
 		!= HAL_OK) {
 		Error_Handler();
 	}
@@ -101,18 +101,18 @@ static void Error_Handler(void) {
 uint8_t ssd1306_I2C_Init(uint8_t address) {
 
 	/* Initialize I2C peripheral */
-	/* MODIFIABLE BEGIN 3 */
+	/* MODIFY BEGIN 3 */
 	MX_I2C1_Init();
-	/* MODIFIABLE END 3 */
+	/* MODIFY END 3 */
 
 	/* Check if parameter (display address) is not NULL */
 	if(address != NULL) {
 
 		/* Check if display is connected to I2C */
 		if (
-			/* MODIFIABLE BEGIN 4 */
+			/* MODIFY BEGIN 4 */
 			HAL_I2C_IsDeviceReady(&hi2c_display, address, 1, I2C_ISDEVICEREADY_TIMEOUT)
-			/* MODIFIABLE END 4 */
+			/* MODIFY END 4 */
 			!= HAL_OK) {
 			return 0;	// Display not connected
 		} else {
@@ -138,9 +138,9 @@ void ssd1306_I2C_WriteMulti(uint8_t address, uint8_t reg, uint8_t* data, uint16_
 			dataToSend[i+1] = data[i];
 		}
 
-		/* MODIFIABLE BEGIN 5 */
+		/* MODIFY BEGIN 5 */
 		HAL_I2C_Master_Transmit(&hi2c_display, address, dataToSend, count+1, I2C_TIMEOUT);
-		/* MODIFIABLE END 5 */
+		/* MODIFY END 5 */
 	}
 }
 
@@ -155,8 +155,8 @@ void ssd1306_I2C_Write(uint8_t address, uint8_t reg, uint8_t data) {
 		dataToSend[0] = reg;
 		dataToSend[1] = data;
 
-		/* MODIFIABLE BEGIN 6 */
+		/* MODIFY BEGIN 6 */
 		HAL_I2C_Master_Transmit(&hi2c_display, address, dataToSend, sizeof(dataToSend), I2C_TIMEOUT);
-		/* MODIFIABLE END 6 */
+		/* MODIFY END 6 */
 	}
 }

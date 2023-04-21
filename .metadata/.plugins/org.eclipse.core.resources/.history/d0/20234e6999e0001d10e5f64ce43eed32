@@ -9,9 +9,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "API_system.h"
 
-
 /* Private defines -----------------------------------------------------------*/
-#define SYSTEM_TIME	1
+#define SYSTEM_TIME	400
 
 
 /* Private typedef -----------------------------------------------------------*/
@@ -26,18 +25,7 @@ typedef enum{
 /* Private variables ---------------------------------------------------------*/
 static delay_t system_delay;
 static systemState_t SYSSTATE;
-static bool_t UPDATE_FLAG = false;
-static uint16_t lastValue = 45;
-static uint8_t data;
-
-
-/* Private function prototypes -----------------------------------------------*/
-/**
- *  @brief
- *  @param  None
- *  @retval None
- */
-static void readSensor(void);
+static magnetometer_t sensor;
 
 
 /* Public functions definitions ----------------------------------------------*/
@@ -51,6 +39,11 @@ void systemInit(void) {
 
 	/* Initialize magnetometer sensor */
 	magnetometerInit();
+	sensor.lastValueX = 0;
+	sensor.lastValueY = 0;
+	sensor.lastValueZ = 0;
+	sensor.arrowAngle = 0;
+	sensor.UPDATE_FLAG = false;
 
 	/* Initialize OLED display */
 	displayInit();
@@ -71,7 +64,7 @@ void systemUpdate(void) {
 			} else if(delayRead(&system_delay)) {
 				SYSSTATE = COMPASS_WRITING_DISPLAY;
 			}
-			readSensor();
+			readMagnetometer(&sensor);
 			break;
 
 		case COMPASS_WRITING_DISPLAY:
@@ -80,9 +73,11 @@ void systemUpdate(void) {
 			} else if(delayRead(&system_delay)) {
 				SYSSTATE = COMPASS_READING_SENSOR;
 			} else {
-				if(UPDATE_FLAG == false) {
+				if(sensor.UPDATE_FLAG == true) {
 					drawOuterCircle();
-					drawArrow(45, SSD1306_COLOR_BLUE);
+					calculateArrowAngle(&sensor);
+					drawArrow(sensor.arrowAngle, SSD1306_COLOR_BLUE);
+					sensor.UPDATE_FLAG = false;
 				}
 			}
 			break;
@@ -93,7 +88,7 @@ void systemUpdate(void) {
 			} else if(delayRead(&system_delay)) {
 				SYSSTATE = RAWDATA_WRITING_DISPLAY;
 			}
-			readSensor();
+			readMagnetometer(&sensor);
 			break;
 
 		case RAWDATA_WRITING_DISPLAY:
@@ -102,26 +97,15 @@ void systemUpdate(void) {
 			} else if(delayRead(&system_delay)) {
 				SYSSTATE = RAWDATA_READING_SENSOR;
 			} else {
-				writeData(45, 45, 45);
+				if(sensor.UPDATE_FLAG == true) {
+					writeData(sensor.lastValueX, sensor.lastValueY, sensor.lastValueZ);
+					sensor.UPDATE_FLAG = false;
+				}
 			}
 			break;
 
 		default:
 			systemInit();
 			break;
-	}
-}
-
-
-/* Private funcTion definitions ----------------------------------------------*/
-static void readSensor(void) {
-
-	uint16_t newValue = 0;
-
-	if(newValue != lastValue) {
-		UPDATE_FLAG = true;
-		lastValue = newValue;
-	} else {
-		UPDATE_FLAG = false;
 	}
 }
